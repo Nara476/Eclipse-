@@ -32,6 +32,7 @@ int main(void) {
     InitAudioDevice();
     
     Music BgMusic = LoadMusicStream("BleachOst.mp3");
+    SetMusicVolume(BgMusic,10);
     PlayMusicStream(BgMusic);
     
     Rectangle Ground = {0, 600, SCREEN_WIDTH, SCREEN_HEIGHT / 3};
