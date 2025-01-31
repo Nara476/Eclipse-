@@ -16,22 +16,22 @@ typedef struct {
 
 #define LEFT_SIDE 0
 #define RIGHT_SIDE 1
-#define INITIAL_ENEMY_SPEED 3.0f
+#define INITIAL_ENEMY_SPEED 7.0f
 #define SPEED_INCREASE_RATE 0.2f
 #define MAX_ENEMIES 100
 #define SCREEN_WIDTH 1080
 #define SCREEN_HEIGHT 720
 #define PROJECTILE_LIFETIME 0.5f 
-#define COOLDOWN_TIME 2.0f 
+#define COOLDOWN_TIME 0.0f 
 #define GRAVITY 50.0f 
 #define JUMP_FORCE 20.0f 
-#define MAX_LIVES 5
+#define MAX_LIVES 10
 
 int main(void) {
     InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "ALL AS PLANNED");
     InitAudioDevice();
     
-    Music BgMusic = LoadMusicStream("La Espada.mp3");
+    Music BgMusic = LoadMusicStream("BleachOst.mp3");
     PlayMusicStream(BgMusic);
     
     Rectangle Ground = {0, 600, SCREEN_WIDTH, SCREEN_HEIGHT / 3};
@@ -45,7 +45,7 @@ int main(void) {
     EnemyTexture.width = Ichigo.width / 2;
     EnemyTexture.height = Ichigo.height / 2;
     
-    float IchigoSpeed = 5;
+    float IchigoSpeed = 10;
     Vector2 IchigoPos = {50, Ground.y - Ichigo.height};
     bool IsFacingLeft = false;
     float IchigoVelocityY = 0.0f; 
@@ -247,7 +247,7 @@ int main(void) {
                 DrawTexturePro(Getsuga, 
                              (Rectangle){0, 0, Getsuga.width, Getsuga.height}, 
                              (Rectangle){getsuga.position.x, getsuga.position.y, 
-                                       Getsuga.width / 3, Getsuga.height / 2}, 
+                                       Getsuga.width , Getsuga.height }, 
                              (Vector2){0, 0}, 0.0f, WHITE);
             }
             
