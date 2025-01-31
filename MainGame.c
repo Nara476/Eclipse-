@@ -244,11 +244,22 @@ int main(void) {
 
             if (getsuga.isActive) 
             {
-                DrawTexturePro(Getsuga, 
+                if (IsFacingLeft)
+                {
+                    DrawTexturePro(Getsuga, 
+                             (Rectangle){0, 0, Getsuga.width, Getsuga.height}, 
+                             (Rectangle){getsuga.position.x-200, getsuga.position.y, 
+                                       Getsuga.width/3 , Getsuga.height/2 }, 
+                             (Vector2){0, 0}, 0.0f, WHITE);
+                }
+                else
+                {
+                    DrawTexturePro(Getsuga, 
                              (Rectangle){0, 0, Getsuga.width, Getsuga.height}, 
                              (Rectangle){getsuga.position.x, getsuga.position.y, 
                                        Getsuga.width/3 , Getsuga.height/2 }, 
                              (Vector2){0, 0}, 0.0f, WHITE);
+                }
             }
             
             DrawText(TextFormat("Score: %d", score), SCREEN_WIDTH - 150, 10, 30, BLACK);
