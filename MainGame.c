@@ -16,8 +16,8 @@ typedef struct {
 
 #define LEFT_SIDE 0
 #define RIGHT_SIDE 1
-#define INITIAL_ENEMY_SPEED 2.0f
-#define SPEED_INCREASE_RATE 0.1f
+#define INITIAL_ENEMY_SPEED 3.0f
+#define SPEED_INCREASE_RATE 0.5f
 #define MAX_ENEMIES 100
 #define SCREEN_WIDTH 1080
 #define SCREEN_HEIGHT 720
