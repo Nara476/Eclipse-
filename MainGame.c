@@ -1,5 +1,6 @@
 #include "include/raylib.h"
 #include <stdbool.h>
+
 typedef struct {
     Vector2 position;
     bool isActive;
@@ -43,7 +44,7 @@ int main(void)
     Texture2D Ichigo = LoadTexture("Ichigo.png");
     Texture2D EnemyTexture = LoadTexture("Enemy.png");
     Texture2D Aizen = LoadTexture("AizenBoss.png");
-
+    bool bossMusicPlaying = false;
     Ichigo.width = 180;
     Ichigo.height = 150;
     EnemyTexture.width = Ichigo.width / 2;
@@ -236,13 +237,17 @@ int main(void)
             if (score >= 50 && AizenHealth  > 0) 
             {
                 AizenActive = true;
+                if (!bossMusicPlaying)  // Ensures music starts only once
+                {
+                    PlayMusicStream(BossMusic);
+                    SetMusicVolume(BossMusic, 0.5f);
+                    bossMusicPlaying = true;  // Prevents restarting every frame
+                }
             }
+    
 
             if (AizenActive)
-            {
-                StopMusicStream(BgMusic);  
-                PlayMusicStream(BossMusic);
-                SetMusicVolume(BossMusic, 0.5f);   
+            {  
                 float DamageCooldown = 2.0f;
                 static bool MovingLeft = true;
                 Rectangle AizenSrc = {0,0, ((MovingLeft)? -Aizen.width : Aizen.width),Aizen.height};
@@ -370,6 +375,7 @@ int main(void)
             DrawText(scoreText, scorePos.x, scorePos.y, 40, BLACK);
             DrawText(restartText, restartPos.x, restartPos.y, 30, DARKGRAY);
             
+            
             if (IsKeyPressed(KEY_R)) 
             {
                 lives = MAX_LIVES;
@@ -383,6 +389,7 @@ int main(void)
                 cooldownTimer = 0.0f;
             }
         }
+
         
         EndDrawing();
     }
