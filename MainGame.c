@@ -16,16 +16,16 @@ typedef struct {
 
 #define LEFT_SIDE 0
 #define RIGHT_SIDE 1
-#define INITIAL_ENEMY_SPEED 7.0f
+#define INITIAL_ENEMY_SPEED 5.0f
 #define SPEED_INCREASE_RATE 0.2f
 #define MAX_ENEMIES 100
 #define SCREEN_WIDTH 1080
 #define SCREEN_HEIGHT 720
 #define PROJECTILE_LIFETIME 0.5f 
-#define COOLDOWN_TIME 0.0f 
+#define COOLDOWN_TIME 2.0f 
 #define GRAVITY 50.0f 
 #define JUMP_FORCE 20.0f 
-#define MAX_LIVES 10
+#define MAX_LIVES 3
 
 int main(void) {
     InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "ALL AS PLANNED");
@@ -247,7 +247,7 @@ int main(void) {
                 DrawTexturePro(Getsuga, 
                              (Rectangle){0, 0, Getsuga.width, Getsuga.height}, 
                              (Rectangle){getsuga.position.x, getsuga.position.y, 
-                                       Getsuga.width , Getsuga.height }, 
+                                       Getsuga.width/3 , Getsuga.height/2 }, 
                              (Vector2){0, 0}, 0.0f, WHITE);
             }
             
