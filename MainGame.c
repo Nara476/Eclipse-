@@ -244,13 +244,11 @@ int main(void)
             {
                 float DamageCooldown = 2.0f;
                 static bool MovingLeft = true;
-                 Rectangle AizenSrc = {0,0, ((MovingLeft)? -Aizen.width : Aizen.width),Aizen.height};
+                Rectangle AizenSrc = {0,0, ((MovingLeft)? -Aizen.width : Aizen.width),Aizen.height};
                 Rectangle AizenDest = {AizenPos.x, AizenPos.y, Aizen.width, Aizen.height};
                 Vector2 origin = {0,0};
                 DrawTexturePro(Aizen,AizenSrc,AizenDest,origin,0,WHITE);
                 DrawText(TextFormat("Health %f",AizenHealth),AizenPos.x,AizenPos.y -50,40,BLACK);
-                if (AizenActive)
-                {
                     static float DamageTimer = 0.0f;
                     if (MovingLeft)
                     {
@@ -278,14 +276,13 @@ int main(void)
                         
                     }
                      if (getsuga.isActive && CheckCollisionRecs(
-                         (Rectangle){getsuga.position.x, getsuga.position.y, Getsuga.width, Getsuga.height},
+                        (Rectangle){getsuga.position.x, getsuga.position.y, Getsuga.width, Getsuga.height},
                         (Rectangle){AizenPos.x, AizenPos.y, Aizen.width, Aizen.height}))
                     {
                         AizenHealth -= 10;
                         getsuga.isActive = false;
                         if (AizenHealth <= 0)
-                        UnloadTexture(Aizen);
-                    }
+                        AizenActive = false;
                 }
             }
             DrawRectangleRec(Ground, RED);
