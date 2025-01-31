@@ -25,14 +25,16 @@ typedef struct {
 #define COOLDOWN_TIME 2.0f 
 #define GRAVITY 50.0f 
 #define JUMP_FORCE 20.0f 
-#define MAX_LIVES 3
+#define MAX_LIVES 40
 
-int main(void) {
+int main(void) 
+{
     InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "ALL AS PLANNED");
     InitAudioDevice();
     
     Music BgMusic = LoadMusicStream("BleachOst.mp3");
-    SetMusicVolume(BgMusic,10);
+    Music BossMusic = LoadMusicStream("BossTheme.mp3");
+    SetMusicVolume(BgMusic,1.0f);
     PlayMusicStream(BgMusic);
     
     Rectangle Ground = {0, 600, SCREEN_WIDTH, SCREEN_HEIGHT / 3};
@@ -40,11 +42,18 @@ int main(void) {
     Texture2D Getsuga = LoadTexture("GetsugaTensho.png");
     Texture2D Ichigo = LoadTexture("Ichigo.png");
     Texture2D EnemyTexture = LoadTexture("Enemy.png");
+    Texture2D Aizen = LoadTexture("AizenBoss.png");
 
     Ichigo.width = 100;
     Ichigo.height = 150;
     EnemyTexture.width = Ichigo.width / 2;
     EnemyTexture.height = Ichigo.height / 2;
+
+    Aizen.height = 200;
+    Aizen.width = 300;
+    Vector2 AizenPos = {600, Ground.y - Aizen.height};
+    bool AizenActive = false;
+    float AizenHealth = 100.0f;
     
     float IchigoSpeed = 10;
     Vector2 IchigoPos = {50, Ground.y - Ichigo.height};
@@ -61,7 +70,7 @@ int main(void) {
     float enemySpawnTimer = 0.0f;
     const float enemySpawnInterval = 1.0f;
     
-    int score = 0;
+    int score = 48;
     float cooldownTimer = 0.0f; 
     bool canShoot = true; 
     
@@ -70,8 +79,10 @@ int main(void) {
 
     SetTargetFPS(60);
     
-    while (!WindowShouldClose()) {
+    while (!WindowShouldClose()) 
+    {
         UpdateMusicStream(BgMusic);
+        UpdateMusicStream(BossMusic);
         float deltaTime = GetFrameTime();
 
         if (!gameOver) 
@@ -183,6 +194,7 @@ int main(void) {
                 canShoot = false;
                 cooldownTimer = COOLDOWN_TIME;
             }
+            
         
             if (getsuga.isActive) 
             {
@@ -219,6 +231,63 @@ int main(void) {
         
         if (!gameOver) 
         {
+
+            if (score >= 50 && !AizenActive) 
+            {
+                AizenActive = true;
+                StopMusicStream(BgMusic);
+                PlayMusicStream(BossMusic);
+                SetMusicVolume(BossMusic, 0.5f);
+            }
+
+            if (AizenActive)
+            {
+                float DamageCooldown = 2.0f;
+                static bool MovingLeft = true;
+                 Rectangle AizenSrc = {0,0, ((MovingLeft)? -Aizen.width : Aizen.width),Aizen.height};
+                Rectangle AizenDest = {AizenPos.x, AizenPos.y, Aizen.width, Aizen.height};
+                Vector2 origin = {0,0};
+                DrawTexturePro(Aizen,AizenSrc,AizenDest,origin,0,WHITE);
+                DrawText(TextFormat("Health %f",AizenHealth),AizenPos.x,AizenPos.y -50,40,BLACK);
+                if (AizenActive)
+                {
+                    static float DamageTimer = 0.0f;
+                    if (MovingLeft)
+                    {
+                        AizenPos.x -= 2;
+                        if (AizenPos.x <= 0)
+                        MovingLeft = false;
+                    }
+                    else
+                    {
+                        AizenPos.x += 2;
+                        if (AizenPos.x >= SCREEN_WIDTH - Aizen.width)
+                        MovingLeft = true;
+                    }
+                    if (DamageTimer > 0)
+                        DamageTimer -= deltaTime;
+                    if (DamageTimer <= 0 && CheckCollisionRecs(
+                         (Rectangle){IchigoPos.x, IchigoPos.y, Ichigo.width, Ichigo.height},
+                        (Rectangle){AizenPos.x, AizenPos.y, Aizen.width, Aizen.height}))
+                    {
+                        lives--;
+                        DamageTimer = DamageCooldown;
+                        if (lives <= 0)
+                        gameOver = true;
+
+                        
+                    }
+                     if (getsuga.isActive && CheckCollisionRecs(
+                         (Rectangle){getsuga.position.x, getsuga.position.y, Getsuga.width, Getsuga.height},
+                        (Rectangle){AizenPos.x, AizenPos.y, Aizen.width, Aizen.height}))
+                    {
+                        AizenHealth -= 10;
+                        getsuga.isActive = false;
+                        if (AizenHealth <= 0)
+                        UnloadTexture(Aizen);
+                    }
+                }
+            }
             DrawRectangleRec(Ground, RED);
             
             Rectangle start = {0, 0, (IsFacingLeft ? -Ichigo.width : Ichigo.width), Ichigo.height};
@@ -277,9 +346,9 @@ int main(void) {
 
             DrawText("Press E to Getsuga Tensho", 10, 10, 30, BLACK);
             DrawText("Press SPACE to Jump", 10, 50, 30, BLACK);
-        } 
-        else 
-        {
+            } 
+            else 
+            {
             const char* gameOverText = "GAME OVER";
             const char* scoreText = TextFormat("Final Score: %d", score);
             const char* restartText = "Press R to Restart";
