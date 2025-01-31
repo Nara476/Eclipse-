@@ -16,7 +16,7 @@ typedef struct {
 
 #define LEFT_SIDE 0
 #define RIGHT_SIDE 1
-#define INITIAL_ENEMY_SPEED 5.0f
+#define INITIAL_ENEMY_SPEED 3.0f
 #define SPEED_INCREASE_RATE 0.2f
 #define MAX_ENEMIES 100
 #define SCREEN_WIDTH 1080
@@ -44,23 +44,24 @@ int main(void)
     Texture2D EnemyTexture = LoadTexture("Enemy.png");
     Texture2D Aizen = LoadTexture("AizenBoss.png");
 
-    Ichigo.width = 100;
+    Ichigo.width = 180;
     Ichigo.height = 150;
     EnemyTexture.width = Ichigo.width / 2;
     EnemyTexture.height = Ichigo.height / 2;
-
-    Aizen.height = 200;
-    Aizen.width = 300;
-    Vector2 AizenPos = {600, Ground.y - Aizen.height};
-    bool AizenActive = false;
-    float AizenHealth = 100.0f;
-    
     float IchigoSpeed = 10;
     Vector2 IchigoPos = {50, Ground.y - Ichigo.height};
     bool IsFacingLeft = false;
     float IchigoVelocityY = 0.0f; 
     bool IsOnGround = true;
-    int lives = MAX_LIVES;  
+    int lives = MAX_LIVES;
+
+    Aizen.height = 200;
+    Aizen.width = 300;
+    Vector2 AizenPos = {600, Ground.y - Aizen.height};
+    bool AizenActive = false;
+    float AizenHealth = 2000.0f;
+    
+     
     bool gameOver = false;  
 
     Projectile getsuga = {0};
@@ -68,7 +69,7 @@ int main(void)
     Enemy enemies[MAX_ENEMIES] = {0};
     int enemyCount = 0;
     float enemySpawnTimer = 0.0f;
-    const float enemySpawnInterval = 1.0f;
+    const float enemySpawnInterval = 3.0f;
     
     int score = 48;
     float cooldownTimer = 0.0f; 
@@ -232,16 +233,16 @@ int main(void)
         if (!gameOver) 
         {
 
-            if (score >= 50 && !AizenActive) 
+            if (score >= 50 && AizenHealth  > 0) 
             {
                 AizenActive = true;
-                StopMusicStream(BgMusic);
-                PlayMusicStream(BossMusic);
-                SetMusicVolume(BossMusic, 0.5f);
             }
 
             if (AizenActive)
             {
+                StopMusicStream(BgMusic);  
+                PlayMusicStream(BossMusic);
+                SetMusicVolume(BossMusic, 0.5f);   
                 float DamageCooldown = 2.0f;
                 static bool MovingLeft = true;
                 Rectangle AizenSrc = {0,0, ((MovingLeft)? -Aizen.width : Aizen.width),Aizen.height};
@@ -280,10 +281,9 @@ int main(void)
                         (Rectangle){AizenPos.x, AizenPos.y, Aizen.width, Aizen.height}))
                     {
                         AizenHealth -= 10;
-                        getsuga.isActive = false;
                         if (AizenHealth <= 0)
                         AizenActive = false;
-                }
+                    }
             }
             DrawRectangleRec(Ground, RED);
             
@@ -388,6 +388,7 @@ int main(void)
     }
     
     UnloadMusicStream(BgMusic);
+    UnloadMusicStream(BossMusic);
     UnloadTexture(Getsuga);
     UnloadTexture(Ichigo);
     UnloadTexture(EnemyTexture);
