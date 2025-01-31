@@ -17,7 +17,7 @@ typedef struct {
 #define LEFT_SIDE 0
 #define RIGHT_SIDE 1
 #define INITIAL_ENEMY_SPEED 3.0f
-#define SPEED_INCREASE_RATE 0.5f
+#define SPEED_INCREASE_RATE 0.2f
 #define MAX_ENEMIES 100
 #define SCREEN_WIDTH 1080
 #define SCREEN_HEIGHT 720
@@ -25,7 +25,7 @@ typedef struct {
 #define COOLDOWN_TIME 2.0f 
 #define GRAVITY 50.0f 
 #define JUMP_FORCE 20.0f 
-#define MAX_LIVES 3
+#define MAX_LIVES 5
 
 int main(void) {
     InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "ALL AS PLANNED");
@@ -58,7 +58,7 @@ int main(void) {
     Enemy enemies[MAX_ENEMIES] = {0};
     int enemyCount = 0;
     float enemySpawnTimer = 0.0f;
-    const float enemySpawnInterval = 2.0f;
+    const float enemySpawnInterval = 1.0f;
     
     int score = 0;
     float cooldownTimer = 0.0f; 
