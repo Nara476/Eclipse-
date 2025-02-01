@@ -80,7 +80,7 @@ int main(void)
     float enemySpawnTimer = 0.0f;
     const float enemySpawnInterval = 3.0f;
     
-    int score = 48;
+    int score = 0;
     float cooldownTimer = 0.0f; 
     bool canShoot = true; 
     
@@ -221,8 +221,8 @@ int main(void)
                 {
                     if (enemies[i].isActive && 
                         CheckCollisionRecs(
-                            (Rectangle){getsuga.position.x, getsuga.position.y, 
-                                      Getsuga.width / 2, Getsuga.height},
+                            (Rectangle){getsuga.position.x-100, getsuga.position.y, 
+                                       Getsuga.width/3 , Getsuga.height/2 },
                             (Rectangle){enemies[i].position.x, enemies[i].position.y, 
                                       enemies[i].texture.width, enemies[i].texture.height}
                         ))      
@@ -232,17 +232,12 @@ int main(void)
                     }
                 }
             }
-        }
-        if (!gameOver) 
-        {
+         
             gameTime += deltaTime;
             currentEnemySpeed = INITIAL_ENEMY_SPEED + (gameTime * SPEED_INCREASE_RATE);
-        }
-        BeginDrawing();
-        ClearBackground(RAYWHITE);
+            BeginDrawing();
+            ClearBackground(RAYWHITE);
         
-        if (!gameOver) 
-        {
             
             if ((score >= 50 && AizenHealth  > 0)) 
             {
@@ -335,10 +330,10 @@ int main(void)
                             aizenProjectile.isActive = false;
                         }
 
-                        if (CheckCollisionRecs(
+                       if (CheckCollisionRecs(
                         (Rectangle){IchigoPos.x, IchigoPos.y, Ichigo.width, Ichigo.height},
                         (Rectangle){aizenProjectile.position.x, aizenProjectile.position.y, 
-                        AizenProjectileTexture.width, AizenProjectileTexture.height}))
+                                               AizenProjectileTexture.width, AizenProjectileTexture.height - 150}))
                         {
                             if (aizenProjectile.isActive) 
                             { 
@@ -356,7 +351,7 @@ int main(void)
                         DrawTexturePro(AizenProjectileTexture, 
                                      (Rectangle){0, 0, (MovingLeft? -(AizenProjectileTexture.width) : (AizenProjectileTexture.width)), AizenProjectileTexture.height - 50}, 
                                      (Rectangle){aizenProjectile.position.x, aizenProjectile.position.y, 
-                                               AizenProjectileTexture.width-150, AizenProjectileTexture.height - 150}, 
+                                               AizenProjectileTexture.width, AizenProjectileTexture.height - 150}, 
                                      (Vector2){0, 0}, 0.0f, WHITE);
                     }
             }
@@ -452,7 +447,7 @@ int main(void)
                         if (CheckCollisionRecs(
                         (Rectangle){IchigoPos.x, IchigoPos.y, Ichigo.width, Ichigo.height},
                         (Rectangle){aizenProjectile.position.x, aizenProjectile.position.y, 
-                        AizenProjectileTexture.width, AizenProjectileTexture.height}))
+                                               AizenProjectileTexture.width, AizenProjectileTexture.height - 150}))
                         {
                             if (aizenProjectile.isActive) 
                             { 
@@ -470,7 +465,7 @@ int main(void)
                         DrawTexturePro(AizenProjectileTexture, 
                                      (Rectangle){0, 0, (MovingLeft? -(AizenProjectileTexture.width) : (AizenProjectileTexture.width)), AizenProjectileTexture.height - 50}, 
                                      (Rectangle){aizenProjectile.position.x, aizenProjectile.position.y, 
-                                               AizenProjectileTexture.width-150, AizenProjectileTexture.height - 150}, 
+                                               AizenProjectileTexture.width, AizenProjectileTexture.height - 150}, 
                                      (Vector2){0, 0}, 0.0f, WHITE);
                     } 
             }
@@ -500,22 +495,11 @@ int main(void)
 
             if (getsuga.isActive) 
             {
-                if (IsFacingLeft)
-                {
                     DrawTexturePro(Getsuga, 
                              (Rectangle){0, 0, Getsuga.width, Getsuga.height}, 
-                             (Rectangle){getsuga.position.x-200, getsuga.position.y, 
+                             (Rectangle){getsuga.position.x-100, getsuga.position.y, 
                                        Getsuga.width/3 , Getsuga.height/2 }, 
                              (Vector2){0, 0}, 0.0f, WHITE);
-                }
-                else
-                {
-                    DrawTexturePro(Getsuga, 
-                             (Rectangle){0, 0, Getsuga.width, Getsuga.height}, 
-                             (Rectangle){getsuga.position.x, getsuga.position.y, 
-                                       Getsuga.width/3 , Getsuga.height/2 }, 
-                             (Vector2){0, 0}, 0.0f, WHITE);
-                }
             }
             
             DrawText(TextFormat("Score: %d", score), SCREEN_WIDTH - 150, 10, 30, BLACK);
@@ -576,6 +560,8 @@ int main(void)
                 AizenAttackCooldown = 0.0f;
                 aizenProjectile.isActive = false;
                 AizenFinalBossActive = false;
+                currentEnemySpeed = INITIAL_ENEMY_SPEED;
+                gameTime = 0.0f;
             }
         }
 
