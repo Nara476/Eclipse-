@@ -39,6 +39,9 @@ int main(void)
     Music BgMusic = LoadMusicStream("BleachOst.mp3");
     Music BossMusic = LoadMusicStream("BossTheme.mp3");
     Sound Yokoso = LoadSound("Yokoso.mp3");
+    Sound Attack = LoadSound("AttackSound.mp3");
+    Sound FlashStep = LoadSound("FlashStep.mp3");
+
     SetMusicVolume(BgMusic,1.0f);
     PlayMusicStream(BgMusic);
     
@@ -51,6 +54,7 @@ int main(void)
     Texture2D AizenProjectileTexture = LoadTexture("AizenProjectile.png"); // Load Aizen's projectile texture
     Texture2D BleachSky = LoadTexture("BleachSky.png");
     Texture2D GroundTexture = LoadTexture("Ground.png");
+
 
     bool bossMusicPlaying = false;
 
@@ -74,7 +78,7 @@ int main(void)
     Aizen.width = 300;
     Vector2 AizenPos = {600, Ground.y - Aizen.height};
     bool AizenActive = false;
-    float AizenHealth = 20000.0f;
+    float AizenHealth = 10000.0f;
     float AizenAttackCooldown = 0.0f;
     
     bool AizenFinalBossActive = false;
@@ -214,6 +218,7 @@ int main(void)
                             
             if (IsMouseButtonDown(MOUSE_BUTTON_LEFT) && canShoot) 
             {
+                PlaySound(Attack);
                 getsuga.isActive = true;
                 getsuga.isFacingLeft = IsFacingLeft;
                 getsuga.position = (Vector2){IchigoPos.x + (IsFacingLeft ? -50 : 50), IchigoPos.y};
@@ -224,6 +229,7 @@ int main(void)
             }
             if (IsMouseButtonPressed(MOUSE_BUTTON_RIGHT) && CanFlashStep)
             {
+                PlaySound(FlashStep);
                 IchigoSpeed = 25;
                 CanFlashStep = false;
                 FlashStepCoolingDown = FlashStepCooldown;
@@ -549,8 +555,8 @@ int main(void)
             {
                     DrawTexturePro(Getsuga, 
                              (Rectangle){0, 0, Getsuga.width, Getsuga.height}, 
-                             (Rectangle){getsuga.position.x-100, getsuga.position.y, 
-                                       Getsuga.width/3 , Getsuga.height/2 }, 
+                             (Rectangle){getsuga.position.x-100, getsuga.position.y - 80, 
+                                       Getsuga.width/3 , Getsuga.height/4 - 100 }, 
                              (Vector2){0, 0}, 0.0f, WHITE);
             }
             
@@ -618,7 +624,7 @@ int main(void)
                 canShoot = true;
                 cooldownTimer = 0.0f;
                 AizenActive = false;
-                AizenHealth = 2000.0f;
+                AizenHealth = 10000.0f;
                 AizenAttackCooldown = 0.0f;
                 aizenProjectile.isActive = false;
                 AizenFinalBossActive = false;
