@@ -22,8 +22,8 @@ typedef struct {
 #define INITIAL_ENEMY_SPEED 3.0f
 #define SPEED_INCREASE_RATE 0.2f
 #define MAX_ENEMIES 100
-#define SCREEN_WIDTH 1080
-#define SCREEN_HEIGHT 720
+#define SCREEN_WIDTH 1800
+#define SCREEN_HEIGHT 1200
 #define PROJECTILE_LIFETIME 2.0f  // Increased lifetime
 #define COOLDOWN_TIME 2.0f 
 #define GRAVITY 50.0f 
@@ -235,6 +235,7 @@ int main(void)
                 FlashStepCoolingDown = FlashStepCooldown;
             }
             if (FlashStepActiveTime >= 5.0f)
+
             {
                
                 IchigoSpeed = 10;
