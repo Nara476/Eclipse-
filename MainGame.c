@@ -1,5 +1,6 @@
 #include "include/raylib.h"
 #include <stdbool.h>
+#include <stdio.h>
 
 typedef struct {
     Vector2 position;
@@ -37,6 +38,7 @@ int main(void)
     
     Music BgMusic = LoadMusicStream("BleachOst.mp3");
     Music BossMusic = LoadMusicStream("BossTheme.mp3");
+    Sound Yokoso = LoadSound("Yokoso.mp3");
     SetMusicVolume(BgMusic,1.0f);
     PlayMusicStream(BgMusic);
     
@@ -47,7 +49,11 @@ int main(void)
     Texture2D EnemyTexture = LoadTexture("Enemy.png");
     Texture2D Aizen = LoadTexture("AizenBoss.png");
     Texture2D AizenProjectileTexture = LoadTexture("AizenProjectile.png"); // Load Aizen's projectile texture
+    Texture2D BleachSky = LoadTexture("BleachSky.png");
+    Texture2D GroundTexture = LoadTexture("Ground.png");
+
     bool bossMusicPlaying = false;
+
     Ichigo.width = 180;
     Ichigo.height = 150;
     EnemyTexture.width = Ichigo.width / 2;
@@ -58,12 +64,17 @@ int main(void)
     float IchigoVelocityY = 0.0f; 
     bool IsOnGround = true;
     int lives = MAX_LIVES;
+    bool CanFlashStep = true;
+    float FlashStepCooldown = 10.0f;
+    float FlashStepTimer = 0;
+    float FlashStepActiveTime = 0;
+    float FlashStepCoolingDown = 0;
 
     Aizen.height = 200;
     Aizen.width = 300;
     Vector2 AizenPos = {600, Ground.y - Aizen.height};
     bool AizenActive = false;
-    float AizenHealth = 2000.0f;
+    float AizenHealth = 20000.0f;
     float AizenAttackCooldown = 0.0f;
     
     bool AizenFinalBossActive = false;
@@ -87,13 +98,17 @@ int main(void)
     float gameTime = 0.0f;  
     float currentEnemySpeed = INITIAL_ENEMY_SPEED;
 
+
     SetTargetFPS(60);
     
     while (!WindowShouldClose()) 
     {
-
+        
         UpdateMusicStream(BgMusic);
         UpdateMusicStream(BossMusic);
+       
+
+    
         float deltaTime = GetFrameTime();
         static float freezeTimer = 0.0f;
         if (!gameOver) 
@@ -159,34 +174,34 @@ int main(void)
                     }
                 }
             }
-                            if (freezeTimer > 0)
-                            {
-                                freezeTimer -= deltaTime;
-                            }
-                            else
-                            {
+            if (freezeTimer > 0)
+            {
+                freezeTimer -= deltaTime;
+            }
+            else
+            {
     
-                                if (IsKeyDown(KEY_D))
-                                {
-                                    IsFacingLeft = false;
-                                    IchigoPos.x += IchigoSpeed ;
-                                } 
-                                if (IchigoPos.x > SCREEN_WIDTH - Ichigo.width) 
-                                    IchigoPos.x = SCREEN_WIDTH - Ichigo.width;
-                                if (IsKeyDown(KEY_A))
-                                { 
-                                    IchigoPos.x -= IchigoSpeed ;
-                                    IsFacingLeft = true;
-                                }
-                                if (IchigoPos.x < 0) 
-                                    IchigoPos.x = 0;
-                                if (IsKeyPressed(KEY_SPACE) && IsOnGround) 
-                                {
-                                    IchigoVelocityY = -JUMP_FORCE;
-                                    IsOnGround = false;
-                                }
+                if (IsKeyDown(KEY_D))
+                {
+                IsFacingLeft = false;
+                IchigoPos.x += IchigoSpeed ;
+                } 
+                if (IchigoPos.x > SCREEN_WIDTH - Ichigo.width) 
+                IchigoPos.x = SCREEN_WIDTH - Ichigo.width;
+                if (IsKeyDown(KEY_A))
+                { 
+                    IchigoPos.x -= IchigoSpeed ;
+                    IsFacingLeft = true;
+                }
+                if (IchigoPos.x < 0) 
+                    IchigoPos.x = 0;
+                if (IsKeyPressed(KEY_SPACE) && IsOnGround) 
+                    {
+                        IchigoVelocityY = -JUMP_FORCE;
+                        IsOnGround = false;
+                    }
     
-                            }
+            }
             IchigoVelocityY += GRAVITY * deltaTime;
             IchigoPos.y += IchigoVelocityY;
 
@@ -196,8 +211,8 @@ int main(void)
                 IchigoVelocityY = 0.0f;
                 IsOnGround = true;
             }
-            
-            if (IsKeyPressed(KEY_E) && canShoot) 
+                            
+            if (IsMouseButtonDown(MOUSE_BUTTON_LEFT) && canShoot) 
             {
                 getsuga.isActive = true;
                 getsuga.isFacingLeft = IsFacingLeft;
@@ -207,7 +222,30 @@ int main(void)
                 canShoot = false;
                 cooldownTimer = COOLDOWN_TIME;
             }
-            
+            if (IsMouseButtonPressed(MOUSE_BUTTON_RIGHT) && CanFlashStep)
+            {
+                IchigoSpeed = 20;
+                CanFlashStep = false;
+                FlashStepCoolingDown = FlashStepCooldown;
+            }
+            if (FlashStepActiveTime >= 5.0f)
+            {
+               
+                IchigoSpeed = 10;
+                FlashStepActiveTime = 0;
+            }
+            if (!CanFlashStep)
+            {
+                FlashStepCoolingDown -= GetFrameTime();
+                FlashStepActiveTime += GetFrameTime();
+                FlashStepTimer += GetFrameTime();
+                if (FlashStepTimer >= FlashStepCooldown)
+                {
+                   
+                    CanFlashStep = true;
+                    FlashStepTimer = 0;
+                }
+            }
             if (getsuga.isActive) 
             {
                 getsuga.position.x += getsuga.isFacingLeft ? -10.0f : 10.0f;
@@ -236,18 +274,25 @@ int main(void)
             gameTime += deltaTime;
             currentEnemySpeed = INITIAL_ENEMY_SPEED + (gameTime * SPEED_INCREASE_RATE);
             BeginDrawing();
+            DrawTexture(BleachSky,-300, 0,WHITE);
+            DrawRectangleRec(Ground, RED);
+            DrawTextureV(GroundTexture,(Vector2){-10,-300},WHITE);
+            
             ClearBackground(RAYWHITE);
         
             
             if ((score >= 50 && AizenHealth  > 0)) 
             {
+                
                 AizenActive = true;
-                if (!bossMusicPlaying)  // Ensures music starts only once
-                {
+                if (!bossMusicPlaying)  
+                {   
+                    PlaySound(Yokoso);
+                    StopMusicStream(BgMusic);
                     PlayMusicStream(BossMusic);
                     SetMusicVolume(BossMusic, 0.5f);
-                    bossMusicPlaying = true;  // Prevents restarting every frame
-                }
+                    bossMusicPlaying = true;  
+                }   
             }
             
 
@@ -258,7 +303,7 @@ int main(void)
                 float DamageCooldown = 2.0f;
                 static bool MovingLeft = true;
                 Rectangle AizenSrc = {0,0, ((MovingLeft)? -Aizen.width : Aizen.width),Aizen.height};
-                Rectangle AizenDest = {AizenPos.x, AizenPos.y, Aizen.width, Aizen.height};
+                Rectangle AizenDest = {AizenPos.x, AizenPos.y + 40, Aizen.width, Aizen.height - 40};
                 Vector2 origin = {0,0};
                 DrawTexturePro(Aizen,AizenSrc,AizenDest,origin,0,WHITE);
                 DrawText(TextFormat("Health %f",AizenHealth),AizenPos.x,AizenPos.y -50,40,BLACK);
@@ -279,7 +324,7 @@ int main(void)
                         DamageTimer -= deltaTime;
                     if (DamageTimer <= 0 && CheckCollisionRecs(
                          (Rectangle){IchigoPos.x, IchigoPos.y, Ichigo.width, Ichigo.height},
-                        (Rectangle){AizenPos.x, AizenPos.y, Aizen.width, Aizen.height}))
+                        (Rectangle){AizenPos.x, AizenPos.y + 40, Aizen.width - 100, Aizen.height - 100}))
                     {
                         lives--;
                         DamageTimer = DamageCooldown;
@@ -290,7 +335,7 @@ int main(void)
                     }
                      if (getsuga.isActive && CheckCollisionRecs(
                         (Rectangle){getsuga.position.x, getsuga.position.y, Getsuga.width, Getsuga.height},
-                        (Rectangle){AizenPos.x, AizenPos.y, Aizen.width, Aizen.height}))
+                        (Rectangle){AizenPos.x, AizenPos.y + 40, Aizen.width, Aizen.height - 40}))
                     {
                         AizenHealth -= 10;
                         if (AizenHealth <= 0)
@@ -320,7 +365,7 @@ int main(void)
 
                     if (aizenProjectile.isActive)
                     {
-                        aizenProjectile.position.x += aizenProjectile.isFacingLeft ? -5.0f : 5.0f; // Slower speed
+                        aizenProjectile.position.x += aizenProjectile.isFacingLeft ? -6.0f : 6.0f; // Slower speed
                         aizenProjectile.lifetime += deltaTime;
 
                         // Deactivate the projectile only if it goes off-screen or exceeds its lifetime
@@ -333,7 +378,7 @@ int main(void)
                        if (CheckCollisionRecs(
                         (Rectangle){IchigoPos.x, IchigoPos.y, Ichigo.width, Ichigo.height},
                         (Rectangle){aizenProjectile.position.x, aizenProjectile.position.y, 
-                                               AizenProjectileTexture.width, AizenProjectileTexture.height - 150}))
+                                               AizenProjectileTexture.width - 150, AizenProjectileTexture.height - 150}))
                         {
                             if (aizenProjectile.isActive) 
                             { 
@@ -351,7 +396,7 @@ int main(void)
                         DrawTexturePro(AizenProjectileTexture, 
                                      (Rectangle){0, 0, (MovingLeft? -(AizenProjectileTexture.width) : (AizenProjectileTexture.width)), AizenProjectileTexture.height - 50}, 
                                      (Rectangle){aizenProjectile.position.x, aizenProjectile.position.y, 
-                                               AizenProjectileTexture.width, AizenProjectileTexture.height - 150}, 
+                                               AizenProjectileTexture.width -150, AizenProjectileTexture.height - 150}, 
                                      (Vector2){0, 0}, 0.0f, WHITE);
                     }
             }
@@ -359,12 +404,15 @@ int main(void)
             if ((score >= 1000 && AizenHealthBoss  > 0)) 
             {
                 AizenFinalBossActive = true;
-                if (!bossMusicPlaying)  // Ensures music starts only once
+                if (!bossMusicPlaying) 
                 {
+                    PlaySound(Yokoso);
+                    StopMusicStream(BgMusic);
                     PlayMusicStream(BossMusic);
                     SetMusicVolume(BossMusic, 0.5f);
-                    bossMusicPlaying = true;  // Prevents restarting every frame
+                    bossMusicPlaying = true; 
                 }
+               
             }
 
             if (AizenFinalBossActive)
@@ -469,11 +517,15 @@ int main(void)
                                      (Vector2){0, 0}, 0.0f, WHITE);
                     } 
             }
-            DrawRectangleRec(Ground, RED);
+            
+            
+           
+            
             
             Rectangle start = {0, 0, (IsFacingLeft ? -Ichigo.width : Ichigo.width), Ichigo.height};
             Rectangle Dest = {IchigoPos.x, IchigoPos.y+10, Ichigo.width, Ichigo.height};
             DrawTexturePro(Ichigo, start, Dest, (Vector2){0, 0}, 0.0f, WHITE);
+           
             
             for (int i = 0; i < enemyCount; i++) 
             {
@@ -504,6 +556,7 @@ int main(void)
             
             DrawText(TextFormat("Score: %d", score), SCREEN_WIDTH - 150, 10, 30, BLACK);
             DrawText(TextFormat("Lives: %d", lives), 10, 90, 30, BLACK);
+            
 
             if (!canShoot) 
             {
@@ -513,9 +566,18 @@ int main(void)
             {
                 DrawText("Ready to Shoot!", SCREEN_WIDTH / 2 - 50, 10, 30, BLACK);
             }
+            if (!CanFlashStep)
+            {
+                DrawText(TextFormat(" FlashStep Cooldown: %.1f", FlashStepCoolingDown), 
+                        SCREEN_WIDTH / 2 - 70, 70, 30, BLACK);
+            } else 
+            {
+                DrawText("Ready to Flash Step!", SCREEN_WIDTH / 2 - 50, 70, 30, BLACK);
+            }
 
-            DrawText("Press E to Getsuga Tensho", 10, 10, 30, BLACK);
-            DrawText("Press SPACE to Jump", 10, 50, 30, BLACK);
+            DrawText("Press M1 to Getsuga Tensho", 10, 10, 30, BLACK);
+            DrawText("Press SPACE to Jump", 10, 130, 30, BLACK);
+            DrawText("Press M2 to Flash Step", 10, 50, 30, BLACK);
             } 
             else 
             {
@@ -562,6 +624,9 @@ int main(void)
                 AizenFinalBossActive = false;
                 currentEnemySpeed = INITIAL_ENEMY_SPEED;
                 gameTime = 0.0f;
+                StopMusicStream(BossMusic);
+                bossMusicPlaying = false;
+                
             }
         }
 
