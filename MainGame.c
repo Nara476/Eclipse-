@@ -22,8 +22,8 @@ typedef struct {
 #define INITIAL_ENEMY_SPEED 3.0f
 #define SPEED_INCREASE_RATE 0.2f
 #define MAX_ENEMIES 100
-#define SCREEN_WIDTH 1800
-#define SCREEN_HEIGHT 1200
+#define SCREEN_WIDTH 1900
+#define SCREEN_HEIGHT 1100
 #define PROJECTILE_LIFETIME 2.0f  // Increased lifetime
 #define COOLDOWN_TIME 2.0f 
 #define GRAVITY 50.0f 
@@ -41,11 +41,20 @@ int main(void)
     Sound Yokoso = LoadSound("Yokoso.mp3");
     Sound Attack = LoadSound("AttackSound.mp3");
     Sound FlashStep = LoadSound("FlashStep.mp3");
+    Sound Owarida = LoadSound("Owarida.mp3");
+    Sound Ikuze = LoadSound("Ikuze.mp3");
+    Sound Scream = LoadSound("Scream.mp3");
 
-    SetMusicVolume(BgMusic,1.0f);
+    Sound IchigoVoice = LoadSound("IchigoVoice.mp3");
+    SetSoundVolume(IchigoVoice, 4);
+    SetSoundVolume(FlashStep,10);
+
+    int soundPicker = 0;
+
+    SetMusicVolume(BgMusic,0.3f);
     PlayMusicStream(BgMusic);
     
-    Rectangle Ground = {0, 600, SCREEN_WIDTH, SCREEN_HEIGHT / 3};
+    Rectangle Ground = {0, 900, SCREEN_WIDTH, SCREEN_HEIGHT / 3};
     
     Texture2D Getsuga = LoadTexture("GetsugaTensho.png");
     Texture2D Ichigo = LoadTexture("Ichigo.png");
@@ -54,6 +63,9 @@ int main(void)
     Texture2D AizenProjectileTexture = LoadTexture("AizenProjectile.png"); // Load Aizen's projectile texture
     Texture2D BleachSky = LoadTexture("BleachSky.png");
     Texture2D GroundTexture = LoadTexture("Ground.png");
+    Texture2D AizenImg = LoadTexture("AizenImg.jpg");
+
+    BleachSky.width = SCREEN_WIDTH + 600;
 
 
     bool bossMusicPlaying = false;
@@ -102,7 +114,7 @@ int main(void)
     float gameTime = 0.0f;  
     float currentEnemySpeed = INITIAL_ENEMY_SPEED;
 
-
+    
     SetTargetFPS(60);
     
     while (!WindowShouldClose()) 
@@ -215,10 +227,17 @@ int main(void)
                 IchigoVelocityY = 0.0f;
                 IsOnGround = true;
             }
-                            
+                  
             if (IsMouseButtonDown(MOUSE_BUTTON_LEFT) && canShoot) 
             {
                 PlaySound(Attack);
+                soundPicker = GetRandomValue(1,3);
+                if (soundPicker == 1)
+                PlaySound(Owarida);
+                else if (soundPicker == 2)
+                PlaySound(Ikuze);
+                else
+                PlaySound(Scream);
                 getsuga.isActive = true;
                 getsuga.isFacingLeft = IsFacingLeft;
                 getsuga.position = (Vector2){IchigoPos.x + (IsFacingLeft ? -50 : 50), IchigoPos.y};
@@ -255,7 +274,7 @@ int main(void)
             }
             if (getsuga.isActive) 
             {
-                getsuga.position.x += getsuga.isFacingLeft ? -10.0f : 10.0f;
+                getsuga.position.x += getsuga.isFacingLeft ? -20.0f : 20.0f;
                 getsuga.lifetime += deltaTime;
                 
                 if (getsuga.position.x < 0 || getsuga.position.x > SCREEN_WIDTH || 
@@ -283,22 +302,24 @@ int main(void)
             BeginDrawing();
             DrawTexture(BleachSky,-300, 0,WHITE);
             DrawRectangleRec(Ground, RED);
-            DrawTextureV(GroundTexture,(Vector2){-10,-300},WHITE);
+            DrawTextureV(GroundTexture,(Vector2){-10,-100},WHITE);
             
             ClearBackground(RAYWHITE);
         
             
             if ((score >= 50 && AizenHealth  > 0)) 
             {
-                
                 AizenActive = true;
                 if (!bossMusicPlaying)  
                 {   
                     PlaySound(Yokoso);
                     StopMusicStream(BgMusic);
                     PlayMusicStream(BossMusic);
-                    SetMusicVolume(BossMusic, 0.5f);
-                    bossMusicPlaying = true;  
+                    SetMusicVolume(BossMusic, 0.3f);
+                    bossMusicPlaying = true;
+                    
+                    WaitTime(4); 
+                        PlaySound(IchigoVoice);
                 }   
             }
             
@@ -372,7 +393,7 @@ int main(void)
 
                     if (aizenProjectile.isActive)
                     {
-                        aizenProjectile.position.x += aizenProjectile.isFacingLeft ? -6.0f : 6.0f; // Slower speed
+                        aizenProjectile.position.x += aizenProjectile.isFacingLeft ? -15.0f : 15.0f; // Slower speed
                         aizenProjectile.lifetime += deltaTime;
 
                         // Deactivate the projectile only if it goes off-screen or exceeds its lifetime
