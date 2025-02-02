@@ -89,7 +89,7 @@ int main(void)
     Enemy enemies[MAX_ENEMIES] = {0};
     int enemyCount = 0;
     float enemySpawnTimer = 0.0f;
-    const float enemySpawnInterval = 3.0f;
+    const float enemySpawnInterval = 5.0f;
     
     int score = 0;
     float cooldownTimer = 0.0f; 
@@ -224,7 +224,7 @@ int main(void)
             }
             if (IsMouseButtonPressed(MOUSE_BUTTON_RIGHT) && CanFlashStep)
             {
-                IchigoSpeed = 20;
+                IchigoSpeed = 25;
                 CanFlashStep = false;
                 FlashStepCoolingDown = FlashStepCooldown;
             }
