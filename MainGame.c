@@ -274,7 +274,7 @@ int main(void)
             }
             if (getsuga.isActive) 
             {
-                getsuga.position.x += getsuga.isFacingLeft ? -20.0f : 20.0f;
+                getsuga.position.x += getsuga.isFacingLeft ? -30.0f : 30.0f;
                 getsuga.lifetime += deltaTime;
                 
                 if (getsuga.position.x < 0 || getsuga.position.x > SCREEN_WIDTH || 
@@ -309,9 +309,12 @@ int main(void)
             
             if ((score >= 50 && AizenHealth  > 0)) 
             {
+                
+                
                 AizenActive = true;
                 if (!bossMusicPlaying)  
                 {   
+                    
                     PlaySound(Yokoso);
                     StopMusicStream(BgMusic);
                     PlayMusicStream(BossMusic);
@@ -582,7 +585,7 @@ int main(void)
                              (Vector2){0, 0}, 0.0f, WHITE);
             }
             
-            DrawText(TextFormat("Score: %d", score), SCREEN_WIDTH - 150, 10, 30, BLACK);
+            DrawText(TextFormat("Score: %d", score), SCREEN_WIDTH - 200, 10, 30, BLACK);
             DrawText(TextFormat("Lives: %d", lives), 10, 90, 30, BLACK);
             
 
