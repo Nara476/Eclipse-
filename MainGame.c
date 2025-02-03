@@ -20,7 +20,7 @@ typedef struct {
 #define LEFT_SIDE 0
 #define RIGHT_SIDE 1
 #define INITIAL_ENEMY_SPEED 3.0f
-#define SPEED_INCREASE_RATE 0.2f
+#define SPEED_INCREASE_RATE 0.05f
 #define MAX_ENEMIES 100
 #define SCREEN_WIDTH 1900
 #define SCREEN_HEIGHT 1100
@@ -44,12 +44,18 @@ int main(void)
     Sound Owarida = LoadSound("Owarida.mp3");
     Sound Ikuze = LoadSound("Ikuze.mp3");
     Sound Scream = LoadSound("Scream.mp3");
+    Sound Ouch1 = LoadSound("ouch1.mp3");
+    Sound Ouch2 = LoadSound("ouch2.mp3");
+    Sound Ouch3 = LoadSound("ouch3.mp3");
+    Sound Ouch4 = LoadSound("ouch4.mp3");
+
 
     Sound IchigoVoice = LoadSound("IchigoVoice.mp3");
     SetSoundVolume(IchigoVoice, 4);
     SetSoundVolume(FlashStep,10);
 
     int soundPicker = 0;
+    int ScreamPicker = 0;
 
     SetMusicVolume(BgMusic,0.3f);
     PlayMusicStream(BgMusic);
@@ -185,6 +191,16 @@ int main(void)
                     {
                         enemies[i].isActive = false;
                         lives--;
+                        ScreamPicker = GetRandomValue(1,4);
+                        if (ScreamPicker == 1)
+                        PlaySound(Ouch1);
+                        if (ScreamPicker == 2)
+                        PlaySound(Ouch2);
+                        if (ScreamPicker == 3)
+                        PlaySound(Ouch3);
+                        if (ScreamPicker == 4)
+                        PlaySound(Ouch4);
+                        
                         if (lives <= 0)
                         gameOver = true;
                     }
@@ -355,9 +371,18 @@ int main(void)
                         DamageTimer -= deltaTime;
                     if (DamageTimer <= 0 && CheckCollisionRecs(
                          (Rectangle){IchigoPos.x, IchigoPos.y, Ichigo.width, Ichigo.height},
-                        (Rectangle){AizenPos.x, AizenPos.y + 40, Aizen.width - 100, Aizen.height - 100}))
+                        (Rectangle){AizenPos.x, AizenPos.y + 40, Aizen.width - 200, Aizen.height - 100}))
                     {
                         lives--;
+                        ScreamPicker = GetRandomValue(1,4);
+                        if (ScreamPicker == 1)
+                        PlaySound(Ouch1);
+                        if (ScreamPicker == 2)
+                        PlaySound(Ouch2);
+                        if (ScreamPicker == 3)
+                        PlaySound(Ouch3);
+                        if (ScreamPicker == 4)
+                        PlaySound(Ouch4);
                         DamageTimer = DamageCooldown;
                         if (lives <= 0)
                         gameOver = true;
