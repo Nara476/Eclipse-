@@ -36,21 +36,21 @@ int main(void)
     InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "ALL AS PLANNED");
     InitAudioDevice();
     
-    Music BgMusic = LoadMusicStream("BleachOst.mp3");
-    Music BossMusic = LoadMusicStream("BossTheme.mp3");
-    Sound Yokoso = LoadSound("Yokoso.mp3");
-    Sound Attack = LoadSound("AttackSound.mp3");
-    Sound FlashStep = LoadSound("FlashStep.mp3");
-    Sound Owarida = LoadSound("Owarida.mp3");
-    Sound Ikuze = LoadSound("Ikuze.mp3");
-    Sound Scream = LoadSound("Scream.mp3");
-    Sound Ouch1 = LoadSound("ouch1.mp3");
-    Sound Ouch2 = LoadSound("ouch2.mp3");
-    Sound Ouch3 = LoadSound("ouch3.mp3");
-    Sound Ouch4 = LoadSound("ouch4.mp3");
+    Music BgMusic = LoadMusicStream("MusicFolder/BleachSong.mp3");
+    Music BossMusic = LoadMusicStream("MusicFolder/BossTheme.mp3");
+    Sound Yokoso = LoadSound("MusicFolder/Yokoso.mp3");
+    Sound Attack = LoadSound("MusicFolder/AttackSound.mp3");
+    Sound FlashStep = LoadSound("MusicFolder/FlashStep.mp3");
+    Sound Owarida = LoadSound("MusicFolder/Owarida.mp3");
+    Sound Ikuze = LoadSound("MusicFolder/Ikuze.mp3");
+    Sound Scream = LoadSound("MusicFolder/Scream.mp3");
+    Sound Ouch1 = LoadSound("MusicFolder/ouch1.mp3");
+    Sound Ouch2 = LoadSound("MusicFolder/ouch2.mp3");
+    Sound Ouch3 = LoadSound("MusicFolder/ouch3.mp3");
+    Sound Ouch4 = LoadSound("MusicFolder/ouch4.mp3");
 
 
-    Sound IchigoVoice = LoadSound("IchigoVoice.mp3");
+    Sound IchigoVoice = LoadSound("MusicFolder/IchigoVoice.mp3");
     SetSoundVolume(IchigoVoice, 4);
     SetSoundVolume(FlashStep,10);
 
@@ -62,14 +62,14 @@ int main(void)
     
     Rectangle Ground = {0, 900, SCREEN_WIDTH, SCREEN_HEIGHT / 3};
     
-    Texture2D Getsuga = LoadTexture("GetsugaTensho.png");
-    Texture2D Ichigo = LoadTexture("Ichigo.png");
-    Texture2D EnemyTexture = LoadTexture("Enemy.png");
-    Texture2D Aizen = LoadTexture("AizenBoss.png");
-    Texture2D AizenProjectileTexture = LoadTexture("AizenProjectile.png"); // Load Aizen's projectile texture
-    Texture2D BleachSky = LoadTexture("BleachSky.png");
-    Texture2D GroundTexture = LoadTexture("Ground.png");
-    Texture2D AizenImg = LoadTexture("AizenImg.jpg");
+    Texture2D Getsuga = LoadTexture("Images/GetsugaTensho.png");
+    Texture2D Ichigo = LoadTexture("Images/Ichigo.png");
+    Texture2D EnemyTexture = LoadTexture("Images/Enemy.png");
+    Texture2D Aizen = LoadTexture("Images/AizenBoss.png");
+    Texture2D AizenProjectileTexture = LoadTexture("Images/AizenProjectile.png"); // Load Aizen's projectile texture
+    Texture2D BleachSky = LoadTexture("Images/BleachSky.png");
+    Texture2D GroundTexture = LoadTexture("Images/Ground.png");
+    Texture2D AizenImg = LoadTexture("Images/AizenImg.jpg");
 
     BleachSky.width = SCREEN_WIDTH + 600;
 
@@ -125,7 +125,6 @@ int main(void)
     
     while (!WindowShouldClose()) 
     {
-        
         UpdateMusicStream(BgMusic);
         UpdateMusicStream(BossMusic);
        
